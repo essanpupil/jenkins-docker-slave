@@ -8,13 +8,18 @@ blocks:
   - name: Build
     task:
       jobs:
-        - name: docker login
-          commands:
-            - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
         - name: docker build
           commands:
             - checkout
             - 'docker build -t essanpupil/jenkins-docker-slave:basic .'
+      secrets:
+        - name: docker
+  - name: Push
+    task:
+      secrets:
+        - name: docker
+      jobs:
         - name: docker push
           commands:
+            - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
             - 'docker push essanpupil/jenkins-docker-slave:basic'
