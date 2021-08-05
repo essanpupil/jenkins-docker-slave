@@ -5,21 +5,14 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Build
+  - name: Build & Push
     task:
       jobs:
         - name: docker build
           commands:
             - checkout
             - 'docker build -t essanpupil/jenkins-docker-slave:basic .'
-      secrets:
-        - name: docker
-  - name: Push
-    task:
-      secrets:
-        - name: docker
-      jobs:
-        - name: docker push
-          commands:
             - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
             - 'docker push essanpupil/jenkins-docker-slave:basic'
+      secrets:
+        - name: docker
